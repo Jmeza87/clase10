@@ -1,0 +1,106 @@
+---
+import Layout from "../layout/Layout.astro"
+import PRODUCTOS from "../data/productos.json"
+const categorias = [...new Set(PRODUCTOS.map((producto) => producto.categoria))];
+const ruta="img/"
+
+
+---
+
+<Layout titulo="tienda">
+	<h1 class="text-center py-5">Tienda</h1>
+
+    <div class="text-center py-5" id="escucharCategoria">
+        {
+            categorias.map((cat)=>(
+        <a href="#" class="btn btn-danger m-1" id={cat}>{cat}</a>
+        ))
+        }
+
+    </div>
+
+    <h2 class="text-center  pb-3" id="titulocategoria">nombre de la categoria</h2>
+    
+        <div class="container">
+            <div class="row" id="mostrarProductos">
+                {
+                    PRODUCTOS.map((pro)=>(
+
+                <div class="col-sm-6 col-md-4 col-lg-3  mb-4 ">
+
+                        <div class="card h-100" data-bs-theme="dark">
+                            <div class="card-header p-0">
+                                <img  src={ruta + pro.imagen} alt="pro" class="img-fluid">
+                                </div>
+
+                          <div class="card-body text-center">
+                            <p>{pro.nombre}</p>
+                            <p class="text-danger">{pro.precio}</p>
+                            </div>
+                          <div class="card-footer text-center   ">
+                            
+                            <a href="" class="btn btn-outline-success">Comprar</a>
+
+                            <a href="" class="btn btn-outline-danger">Vender</a>
+                            
+                            </div>
+                        </div>
+
+                </div>
+                ))
+                }   
+            </div>
+
+        </div>
+</Layout>
+
+<script>
+
+    import PRODUCTOS from "../data/productos.json"
+    const escucharCategoriaEl = document.querySelector("#escucharCategoria")
+
+    const mostrarProductosEl = document.querySelector("#mostrarProductos")
+
+    const titulocategoriaEl=document.querySelector("#titulocategoria")
+    const ruta="img/"
+    escucharCategoriaEl.addEventListener("click",(e)=>{
+      
+       // e.preventDefault();
+        if(e.target && e.target.tagName==="A"){
+            
+            let cat=e.target.id;
+           // titulocategoriaEl.innerHTML=cat;
+            const productosFiltrados = PRODUCTOS.filter((producto) => producto.categoria === cat);
+            renderProductos(productosFiltrados,cat);
+        } 
+    })  
+
+
+    function renderProductos(productosFiltrados,cat){
+        titulocategoriaEl.innerHTML=cat;
+        let valor="";
+        productosFiltrados.map((prod) => (
+            valor+=`
+                <div class="col-lg-4 col-xl-3 mb-4">
+                    <div class="card h-100" data-bs-theme="dark">
+                        <div class="card-header p-0">
+                            <img src=${ruta + prod.imagen} alt="" class="img-fluid">
+                        </div>
+                        <div class="card-body text-center d-flex flex-column justify-content-between">
+                            <p>${prod.nombre}</p>
+                            <h6 class="pt-3 text-danger"><b>Precio: </b>${prod.precio}$</h6>
+                        </div>
+                        <div class="card-footer text-center">
+                            <a href="#" class="btn btn-outline-success btn-sm" id=${prod.id} name="detalle" data-bs-toggle="modal" data-bs-target="#detalleModal">Detalle</a>
+                            <a href="#" class="btn btn-outline-danger btn-sm" id=${prod.id} name="comprar">Comprar</a>
+                        </div>
+                    </div>
+                </div> 
+            `
+          ))
+
+          mostrarProductosEl.innerHTML=valor;
+    }
+
+
+</script>
